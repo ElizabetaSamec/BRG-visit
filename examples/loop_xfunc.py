@@ -7,7 +7,6 @@ from help import get_index
 from help import edge_constraints
 from help import map_value_to_all_edges
 
-
 from compas.datastructures import Network
 from compas.utilities import XFunc
 from compas_rhino.helpers import NetworkArtist
@@ -20,8 +19,6 @@ fixed    = list(network.vertices_where({'is_fixed': True}))
 ## loop=2.0, bnd=10.0, rest=1.0
 q        = network.get_edges_attribute('q')
 
-# fixed vertices
-pins = network.vertices_where({'is_fixed': True})
 # edges to assign length constraint (bnd, ridge and valley)
 lengths = network.edges_where({'l': True})
 # edges to assign force constraint (rest)
@@ -57,9 +54,8 @@ force_constraints = edge_constraints(indexf, fs)
 ##FDM with iterative computation of q - tolerances added for the termination of the outer loop
 ##LU decomposition for solving lin. system
 ##tolerance for force tol_f = 1.e-2, tolerance for length tol_l = 1.e-2
-#nc_lu, f_lu, q_lu = XFunc('iter.multistepFDM_wtol')(vertices, edges, fixed, q, fcs=force_constraints, lcs=length_constraints, tol_f=1.e-2, tol_l=1.e-2, steps=10000)
+#nc_lu, f_lu, q_lu = XFunc('iter.multistepFDM_wtol')(vertices, edges, fixed, q, fcs=force_constraints, lcs=length_constraints, l0cs = l0_constraints, tol_f=1.e-2, tol_l=1.e-2, steps=10000)
 #l_lu = XFunc('iter.list_of_element_lengths')(edges, nc_lu)
-#
 #
 ##FDM with iterative computation of q - tolerances added for the termination of the outer loop
 ##CG for solving lin. system - not taking into account result from the previous step (latest=False)
@@ -69,7 +65,7 @@ force_constraints = edge_constraints(indexf, fs)
 #
 ##FDM with iterative computation of q - tolerances added for the termination of the outer loop
 ##CG for solving lin. system - taking into account result from the previous step
-#nc_cg2, f_cg2, q_cg2 = XFunc('iter.multistepFDM_wtol_cg') (vertices, edges, fixed, q, fcs=force_constraints, lcs=length_constraints, l0cs = l0_constraints, tol_f=1.e-2, tol_l=1.e-2, i_tol=1e-06, steps=10000, latest=False)
+#nc_cg2, f_cg2, q_cg2 = XFunc('iter.multistepFDM_wtol_cg') (vertices, edges, fixed, q, fcs=force_constraints, lcs=length_constraints, l0cs = l0_constraints, tol_f=1.e-2, tol_l=1.e-2, i_tol=1e-06, steps=10000)
 #l_cg2 = XFunc('iter.list_of_element_lengths')(edges, nc_cg2)
 #
 ## Inexact iterative FDM
